@@ -1,5 +1,7 @@
 "use client";
 
+import { auth } from "@/auth";
+import clientUserFetch from "@/lib/clientUserFetch";
 import { useEffect, useState } from "react";
 
 // Impement for floating numbers
@@ -17,6 +19,19 @@ export default function Home() {
 
   let enteredTime: number | null = null;
   let timer: NodeJS.Timeout;
+  let user;
+
+  useEffect(() => {
+    async function fetchUser() {
+      const fetchedUser = await clientUserFetch();
+
+      user = fetchedUser;
+
+      console.log(user);
+    }
+
+    fetchUser();
+  }, []);
 
   function startTimer() {
     setStartFlag(true);
@@ -24,20 +39,22 @@ export default function Home() {
 
   useEffect(() => {
     if (!startFlag) return;
+    let dbTime = 0;
 
     timer = setInterval(() => {
       if (timeMin === 0 && timeSec === 0) {
         clearInterval(timer);
         setStartFlag(false);
         alert("Time is up! Take a break.");
+
         // cycle functionality
-        cycle++
+        cycle++;
         if (cycle > 7) cycle = 0;
 
         if (cycle % 2 === 0) setTimeMin(workRestTime[0]);
         else if (cycle === 7) setTimeMin(workRestTime[2]);
         else setTimeMin(workRestTime[1]);
-        // 
+        //
       } else if (!isPaused) {
         if (timeSec > 0) {
           setTimeSec((prevSec) => prevSec - 1);
@@ -45,6 +62,7 @@ export default function Home() {
           setTimeSec(59);
           setTimeMin((prevMin) => prevMin - 1);
         }
+        dbTime++
       }
     }, 1000);
 
@@ -78,7 +96,7 @@ export default function Home() {
       return;
     }
     setWorkRestTime([+timeWork, +timeRest, +timeLongRest]);
-    restartTimer()
+    restartTimer();
   }
 
   return (
