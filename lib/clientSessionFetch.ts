@@ -2,6 +2,6 @@
 
 import { auth } from "@/auth"
 
-export default async function clientUserFetch() {
+export default async function clientSessionFetch() {
     return await auth()
 }

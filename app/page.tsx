@@ -1,8 +1,13 @@
 "use client";
 
-import { auth } from "@/auth";
-import clientUserFetch from "@/lib/clientUserFetch";
+import clientSessionFetch from "@/lib/clientSessionFetch";
+import { dbPomodoroSession } from "@/lib/db";
+import { Session } from "next-auth";
 import { useEffect, useState } from "react";
+
+interface SessionUserId extends Session {
+  userId: number;
+}
 
 // Impement for floating numbers
 
@@ -10,24 +15,43 @@ export default function Home() {
   // Remake this list into a dictionary for better readiablity
   let [workRestTime, setWorkRestTime] = useState<number[]>([25, 5, 15]);
   // const [cycles, setCycles] = useState(0)
-  let cycle = 0;
+  let cycle = 0
   let [timeMin, setTimeMin] = useState(1);
   let [timeSec, setTimeSec] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [startFlag, setStartFlag] = useState(false);
   const [errorFlag, setErrorFlag] = useState(false);
+  const [session, setSession] = useState<SessionUserId | null>(null);
+  const [dbFlag, setDbFlag] = useState(false);
+  const [dbTime, setDbTime] = useState<number>(0);
 
   let enteredTime: number | null = null;
   let timer: NodeJS.Timeout;
-  let user;
+
+  useEffect(() => {
+    async function uploadToDb() {
+      if (session) {
+        await dbPomodoroSession(
+          session.userId,
+          new Date(),
+          dbTime,
+          !(cycle % 2)
+        );
+        setDbTime(0);
+      }
+    }
+
+    uploadToDb();
+  }, [dbFlag]);
 
   useEffect(() => {
     async function fetchUser() {
-      const fetchedUser = await clientUserFetch();
+      const fetchedSession = await clientSessionFetch();
 
-      user = fetchedUser;
+      setSession(fetchedSession as SessionUserId);
 
-      console.log(user);
+      // remove this vulnerability later
+      console.log("session", session);
     }
 
     fetchUser();
@@ -39,13 +63,16 @@ export default function Home() {
 
   useEffect(() => {
     if (!startFlag) return;
-    let dbTime = 0;
 
     timer = setInterval(() => {
       if (timeMin === 0 && timeSec === 0) {
         clearInterval(timer);
         setStartFlag(false);
         alert("Time is up! Take a break.");
+
+        if (session) {
+          setDbFlag(!dbFlag);
+        }
 
         // cycle functionality
         cycle++;
@@ -62,7 +89,7 @@ export default function Home() {
           setTimeSec(59);
           setTimeMin((prevMin) => prevMin - 1);
         }
-        dbTime++
+        setDbTime(dbTime + 1);
       }
     }, 1000);
 
@@ -84,6 +111,11 @@ export default function Home() {
     setTimeSec(0);
     setIsPaused(false);
     setStartFlag(false);
+  }
+
+  function skipTimer() {
+    setTimeMin(0);
+    setTimeSec(0);
   }
 
   function saveParams(formData: FormData) {
@@ -114,6 +146,10 @@ export default function Home() {
       <br />
       <button type="button" onClick={restartTimer}>
         restart
+      </button>
+      <br />
+      <button type="button" onClick={skipTimer}>
+        skip
       </button>
       <br />
       <button

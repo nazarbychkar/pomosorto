@@ -13,6 +13,6 @@ export default async function dbConnect() {
 export async function dbPomodoroSession(userId:number, sessionTimestamp: Date, elapsedTime: number, workRest: boolean) {
     const sql = await dbConnect();
 
-    await sql`INSERT INTO "pomodoro_sessions" (userId, sessionTimestamp, elapsedTime, workRest)
+    await sql`INSERT INTO "pomodoro_sessions" ("userId", "sessionTimestamp", "elapsedTime", "workRest")
     VALUES (${userId}, ${sessionTimestamp}, ${elapsedTime}, ${workRest})`
 }
