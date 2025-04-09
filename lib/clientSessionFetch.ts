@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
-import { auth } from "@/auth"
+import { auth } from "@/auth";
 
 export default async function clientSessionFetch() {
-    return await auth()
+  return await auth();
 }

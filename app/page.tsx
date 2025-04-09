@@ -15,7 +15,7 @@ export default function Home() {
   // Remake this list into a dictionary for better readiablity
   let [workRestTime, setWorkRestTime] = useState<number[]>([25, 5, 15]);
   // const [cycles, setCycles] = useState(0)
-  let cycle = 0
+  let cycle = 0;
   let [timeMin, setTimeMin] = useState(1);
   let [timeSec, setTimeSec] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
