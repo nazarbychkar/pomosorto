@@ -25,7 +25,6 @@ export default function Home() {
   const [dbFlag, setDbFlag] = useState(false);
   const [dbTime, setDbTime] = useState<number>(0);
 
-  let enteredTime: number | null = null;
   let timer: NodeJS.Timeout;
 
   useEffect(() => {
