@@ -14,8 +14,8 @@ interface SessionUserId extends Session {
 export default function Home() {
   // Remake this list into a dictionary for better readiablity
   let [workRestTime, setWorkRestTime] = useState<number[]>([25, 5, 15]);
-  // const [cycles, setCycles] = useState(0)
-  let cycle = 0;
+  const [cycle, setCycle] = useState(0);
+  // let cycle = 0;
   let [timeMin, setTimeMin] = useState(1);
   let [timeSec, setTimeSec] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -68,18 +68,21 @@ export default function Home() {
       if (timeMin === 0 && timeSec === 0) {
         clearInterval(timer);
         setStartFlag(false);
-        alert("Time is up! Take a break.");
+        if (cycle % 2) alert("Time is up! Let's work.");
+        else alert("Time is up! Take a break.");
 
         if (session) {
           setDbFlag(!dbFlag);
         }
 
         // cycle functionality
-        cycle++;
-        if (cycle > 7) cycle = 0;
+        let newCycle = cycle + 1;
 
-        if (cycle % 2 === 0) setTimeMin(workRestTime[0]);
-        else if (cycle === 7) setTimeMin(workRestTime[2]);
+        if (newCycle > 7) newCycle = 0;
+        setCycle(newCycle);
+
+        if (newCycle % 2 === 0) setTimeMin(workRestTime[0]);
+        else if (newCycle === 7) setTimeMin(workRestTime[2]);
         else setTimeMin(workRestTime[1]);
         //
       } else if (!isPaused) {
@@ -111,6 +114,7 @@ export default function Home() {
     setTimeSec(0);
     setIsPaused(false);
     setStartFlag(false);
+    setCycle(0);
   }
 
   function skipTimer() {
