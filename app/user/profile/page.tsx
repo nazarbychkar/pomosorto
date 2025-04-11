@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import Link from "next/link";
 
-// add stats of hours in focus
+// TODO: add stats of hours in focus
 export default async function Page() {
   const session = await auth();
 

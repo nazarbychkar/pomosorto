@@ -9,7 +9,7 @@ interface SessionUserId extends Session {
   userId: number;
 }
 
-// Impement for floating numbers
+// TODO: Impement for floating numbers
 
 export default function Timer() {
   // Remake this list into a dictionary for better readiablity
@@ -49,7 +49,7 @@ export default function Timer() {
 
       setSession(fetchedSession as SessionUserId);
 
-      // remove this vulnerability later
+      // TODO: remove this vulnerability later
       console.log("session", session);
     }
 
