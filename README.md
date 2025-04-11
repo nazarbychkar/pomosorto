@@ -5,16 +5,14 @@ This is a **Pomodoro timer** where you can define and track your own productivit
 
 The idea is simple: you may want to measure how different **actions** (or **inactions**) affect your productivity. This tool helps you do just that — giving you a flexible way to experiment, reflect, and optimize how you work.
 
----
-
 ## Tech Stack Choice
 
-I've chosen to use a combination of **PostgreSQL** and **MongoDB** — mostly because I wanted to give Mongo a shot.
+I've chosen to use a combination of **PostgreSQL** _(to store structured data)_ and **MongoDB** _(to store flexible data)_ — mostly because I wanted to give Mongo a shot.
 
 Would it have been neater, smarter, and simpler to stick with **PostgreSQL's JSONB**? Probably.  
 But hey, maybe next time.
 
-# Notes from Next.ks
+# Notes from Next.js
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
