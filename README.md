@@ -12,6 +12,18 @@ I've chosen to use a combination of **PostgreSQL** _(to store structured data)_ 
 Would it have been neater, smarter, and simpler to stick with **PostgreSQL's JSONB**? Probably.  
 But hey, maybe next time.
 
+## .env 
+
+You'll need:
+
+```
+AUTH_SECRET="blahblahblah"
+AUTH_GOOGLE_ID="blahblahblah"
+AUTH_GOOGLE_SECRET="blahblahblah"
+DATABASE_URL="blahblahblah"
+MONGODB_ATLAS_URL="blahblahblah"
+```
+
 # Notes from Next.js
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).

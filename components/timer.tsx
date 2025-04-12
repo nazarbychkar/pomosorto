@@ -1,7 +1,7 @@
 "use client";
 
 import clientSessionFetch from "@/lib/clientSessionFetch";
-import { dbPomodoroSession } from "@/lib/db";
+import { dbPomodoroSession } from "@/lib/postgresql";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 
