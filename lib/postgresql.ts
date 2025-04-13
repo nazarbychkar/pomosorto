@@ -10,7 +10,7 @@ export default async function dbConnect() {
   return sql;
 }
 
-export async function dbPomodoroSession(
+export async function insertPomodoroSession(
   userId: number,
   sessionTimestamp: Date,
   elapsedTime: number,
@@ -18,6 +18,21 @@ export async function dbPomodoroSession(
 ) {
   const sql = await dbConnect();
 
-  await sql`INSERT INTO "pomodoro_sessions" ("userId", "sessionTimestamp", "elapsedTime", "workRest")
-    VALUES (${userId}, ${sessionTimestamp}, ${elapsedTime}, ${workRest})`;
+  await sql`
+    INSERT INTO "pomodoro_sessions"
+    ("userId", "sessionTimestamp", "elapsedTime", "workRest")
+    VALUES (${userId}, ${sessionTimestamp}, ${elapsedTime}, ${workRest})
+    `;
+}
+
+export async function retrieveFocusTime(userId: number) {
+  const sql = await dbConnect();
+
+  const focusLog = await sql`
+    SELECT "elapesetTime", "workRest" 
+    FROM "pomodoro_sessions"
+    WHERE "userId" = ${userId}
+    `;
+
+  return focusLog;
 }

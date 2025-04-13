@@ -1,7 +1,7 @@
 "use client";
 
 import clientSessionFetch from "@/lib/clientSessionFetch";
-import { dbPomodoroSession } from "@/lib/postgresql";
+import { insertPomodoroSession } from "@/lib/postgresql";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ export default function Timer() {
   useEffect(() => {
     async function uploadToDb() {
       if (session) {
-        await dbPomodoroSession(
+        await insertPomodoroSession(
           session.userId,
           new Date(),
           dbTime,

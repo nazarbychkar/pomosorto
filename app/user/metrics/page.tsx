@@ -1,7 +1,12 @@
 export default function Page() {
+  const userData = () => {}
+  const focusTime = () => {}
   return (
-    <div>
+    <main>
       <h1>Metrics</h1>
-    </div>
+      <div>
+        <table>{userData && userData.map((metric) => <th>{metric}</th>)}</table>
+      </div>
+    </main>
   );
 }

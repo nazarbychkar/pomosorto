@@ -1,5 +1,7 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 const uri = process.env.MONGODB_ATLAS_URL;
+const DB_NAME = "pomodoro";
+const COLLECTION_NAME = "users";
 
 if (!uri) throw Error("where is mongodb uri?");
 
@@ -12,7 +14,30 @@ const client = new MongoClient(uri, {
   },
 });
 
-async function run() {
+// TODO: but i also have different funcs, that does need and does doesn't need to provide different arguments, how?
+async function connectionWraper(callback: Function) {
+  try {
+    await client.connect();
+    const database = client.db(DB_NAME);
+    const collection = database.collection(COLLECTION_NAME);
+
+    await callback(collection);
+  } catch (e) {
+    throw Error("mongodb error: " + e);
+  } finally {
+    await client.close();
+  }
+}
+
+export async function connectMongo() {
+  await client.connect();
+  const database = client.db(DB_NAME);
+  const collection = database.collection(COLLECTION_NAME);
+
+  return collection;
+}
+
+async function keepYourHoesInCHECK() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -26,4 +51,29 @@ async function run() {
     await client.close();
   }
 }
-run().catch(console.dir);
+
+async function insertUser(userId: number) {
+  try {
+    const collection = await connectMongo();
+
+    const insertOneResult = await collection.insertOne({ userId: userId });
+
+    return insertOneResult;
+  } catch (e) {
+    throw Error("something is wrong with documnets, insertion of documents.");
+  } finally {
+    await client.close();
+  }
+}
+
+async function retrieveUserData(userId: number) {
+  try {
+    const collection = await connectMongo();
+
+    const userData = await collection.find({ userId: userId });
+
+    return userData;
+  } finally {
+    await client.close();
+  }
+}

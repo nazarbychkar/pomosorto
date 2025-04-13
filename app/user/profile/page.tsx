@@ -18,8 +18,8 @@ export default async function Page() {
   console.log(user);
 
   return (
-    <div>
+    <main>
       <h1>{user.name}</h1>
-    </div>
+    </main>
   );
 }
