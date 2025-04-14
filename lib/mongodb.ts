@@ -15,7 +15,7 @@ const client = new MongoClient(uri, {
 });
 
 // TODO: but i also have different funcs, that does need and does doesn't need to provide different arguments, how?
-async function connectionWraper(callback: Function) {
+export async function connectionWraper(callback: Function) {
   try {
     await client.connect();
     const database = client.db(DB_NAME);
@@ -37,7 +37,7 @@ export async function connectMongo() {
   return collection;
 }
 
-async function keepYourHoesInCHECK() {
+export async function keepYourHoesInCHECK() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
@@ -52,7 +52,7 @@ async function keepYourHoesInCHECK() {
   }
 }
 
-async function insertUser(userId: number) {
+export async function insertUser(userId: number) {
   try {
     const collection = await connectMongo();
 
@@ -66,11 +66,11 @@ async function insertUser(userId: number) {
   }
 }
 
-async function retrieveUserData(userId: number) {
+export async function retrieveUserData(userId: number) {
   try {
     const collection = await connectMongo();
 
-    const userData = await collection.find({ userId: userId });
+    const userData = await collection.find().toArray();
 
     return userData;
   } finally {

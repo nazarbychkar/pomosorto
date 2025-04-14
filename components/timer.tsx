@@ -2,12 +2,9 @@
 
 import clientSessionFetch from "@/lib/clientSessionFetch";
 import { insertPomodoroSession } from "@/lib/postgresql";
-import { Session } from "next-auth";
+import { SessionUserId } from "@/lib/sessionInterface";
 import { useEffect, useState } from "react";
 
-interface SessionUserId extends Session {
-  userId: number;
-}
 
 // TODO: Impement for floating numbers
 
