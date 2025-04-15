@@ -29,7 +29,7 @@ export async function retrieveFocusTime(userId: number) {
   const sql = await dbConnect();
 
   const focusLog = await sql`
-    SELECT "elapsedTime", "workRest" 
+    SELECT * 
     FROM "pomodoro_sessions"
     WHERE "userId" = ${userId}
     `;
