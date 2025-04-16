@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 export default function Timer() {
   // Remake this list into a dictionary for better readiablity
-  let [workRestTime, setWorkRestTime] = useState<number[]>([25, 5, 15]);
+  let [workRestTime, setWorkRestTime] = useState([25, 5, 15]);
   const [cycle, setCycle] = useState(0);
   // let cycle = 0;
   let [timeMin, setTimeMin] = useState(1);
@@ -47,7 +47,7 @@ export default function Timer() {
       setSession(fetchedSession as SessionUserId);
 
       // TODO: remove this vulnerability later
-      console.log("session", session);
+      // console.log("session", session);
     }
 
     fetchUser();
@@ -64,8 +64,9 @@ export default function Timer() {
       if (timeMin === 0 && timeSec === 0) {
         clearInterval(timer);
         setStartFlag(false);
-        if (cycle % 2) alert("Time is up! Let's work.");
-        else alert("Time is up! Take a break.");
+        // if (cycle % 2) alert("Time is up! Let's work.");
+        // else alert("Time is up! Take a break.");
+        alert(cycle % 2 ? "Time is up! Let's work." : "Time is up! Take a break.");
 
         if (session) {
           setDbFlag(!dbFlag);

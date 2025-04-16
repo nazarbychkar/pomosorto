@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import AddMetricButton from "@/components/addMeticsButton";
 import { retrieveUserMetrics } from "@/lib/mongodb";
 import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
@@ -9,7 +10,8 @@ export default async function Page() {
 
   const mongoData = await retrieveUserMetrics(userId);
   const postgreData = await retrieveUserFocus(userId);
-
+  
+  // data aggregation
   const dataByDate: Record<string, object> = {};
   for (let record of postgreData) {
     const date =
@@ -28,6 +30,15 @@ export default async function Page() {
       dataByDate[date].focusTime += record.elapsedTime;
     }
   }
+  // 
+
+  function addMetric() {
+
+  }
+
+  function removeMetric() {
+
+  }
 
   return (
     <main>
@@ -38,12 +49,13 @@ export default async function Page() {
             <tr>
               <th>Date</th>
               <th>FocusTime</th>
-              {mongoData &&
+              {mongoData[0] &&
                 Object.keys(mongoData[0]).map((metricsKey, key) => (
                   <th key={key} className="p-3">
                     {metricsKey}
                   </th>
                 ))}
+                <th><AddMetricButton /></th>
             </tr>
             {Object.keys(dataByDate).map((currentDate, key) => (
               <tr>
