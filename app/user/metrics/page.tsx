@@ -1,34 +1,33 @@
 import { auth } from "@/auth";
-import { retrieveUserData } from "@/lib/mongodb";
-import { retrieveFocusTime } from "@/lib/postgresql";
+import { retrieveUserMetrics } from "@/lib/mongodb";
+import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
 
 export default async function Page() {
   const session = (await auth()) as SessionUserId;
   const userId = session.userId;
 
-  const mongoData = await retrieveUserData(userId);
-  const postgreData = await retrieveFocusTime(userId);
+  const mongoData = await retrieveUserMetrics(userId);
+  const postgreData = await retrieveUserFocus(userId);
 
+  const dataByDate: Record<string, object> = {};
   for (let record of postgreData) {
-    const todate = record.sessionTimestamp.getDate();
-    const tomonth = record.sessionTimestamp.getMonth() + 1;
-    const toyear = record.sessionTimestamp.getFullYear();
-    const original_date = todate + "/" + tomonth + "/" + toyear;
-    record.sessionTimestamp = original_date;
-    console.log(record);
-  }
-  // TODO: now, for each date, you should count the focus time. and then map it to <td>
+    const date =
+      record.sessionTimestamp.getDate() +
+      "/" +
+      record.sessionTimestamp.getMonth() +
+      1 +
+      "/" +
+      record.sessionTimestamp.getFullYear();
 
-  let focusTime = 0;
-  for (let record of postgreData) {
+    if (!dataByDate[date]) {
+      dataByDate[date] = { focusTime: 0 };
+    }
+
     if (record.workRest) {
-      focusTime += parseInt(record.elapsedTime, 10);
+      dataByDate[date].focusTime += record.elapsedTime;
     }
   }
-
-  // console.log(mongoData[0]);
-  // console.log(postgreDataFocusTime);
 
   return (
     <main>
@@ -37,12 +36,6 @@ export default async function Page() {
         <table>
           <tbody>
             <tr>
-              {/* {postgreDataFocusTime &&
-                Object.keys(postgreDataFocusTime[0]).map((metricsKey, key) => (
-                  <th key={key} className="p-3">
-                    {metricsKey}
-                  </th>
-                ))} */}
               <th>Date</th>
               <th>FocusTime</th>
               {mongoData &&
@@ -52,8 +45,15 @@ export default async function Page() {
                   </th>
                 ))}
             </tr>
-            {postgreData.map((record, key) => (
-              <tr>record.</tr>
+            {Object.keys(dataByDate).map((currentDate, key) => (
+              <tr>
+                <td key={key} className="p-3">
+                  {currentDate}
+                </td>
+                <td key={key} className="p-3">
+                  {dataByDate[currentDate].focusTime}
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>

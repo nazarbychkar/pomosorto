@@ -25,7 +25,7 @@ export async function insertPomodoroSession(
     `;
 }
 
-export async function retrieveFocusTime(userId: number) {
+export async function retrieveUserFocus(userId: number) {
   const sql = await dbConnect();
 
   const focusLog = await sql`

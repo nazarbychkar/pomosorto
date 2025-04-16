@@ -66,7 +66,7 @@ export async function insertUser(userId: number) {
   }
 }
 
-export async function retrieveUserData(userId: number) {
+export async function retrieveUserMetrics(userId: number) {
   try {
     const collection = await connectMongo();
 
