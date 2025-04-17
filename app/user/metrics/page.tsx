@@ -4,15 +4,20 @@ import { retrieveUserMetrics } from "@/lib/mongodb";
 import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
 
+// TODO: table should be in client component, cause it is interactive and constantly changing
 export default async function Page() {
   const session = (await auth()) as SessionUserId;
   const userId = session.userId;
 
   const mongoData = await retrieveUserMetrics(userId);
   const postgreData = await retrieveUserFocus(userId);
-  
+
+  interface DataByDate {
+    focusTime: number;
+  }
+
   // data aggregation
-  const dataByDate: Record<string, object> = {};
+  const dataByDate: Record<string, DataByDate> = {};
   for (let record of postgreData) {
     const date =
       record.sessionTimestamp.getDate() +
@@ -30,15 +35,11 @@ export default async function Page() {
       dataByDate[date].focusTime += record.elapsedTime;
     }
   }
-  // 
+  //
 
-  function addMetric() {
+  function addMetric() {}
 
-  }
-
-  function removeMetric() {
-
-  }
+  function removeMetric() {}
 
   return (
     <main>
@@ -55,7 +56,9 @@ export default async function Page() {
                     {metricsKey}
                   </th>
                 ))}
-                <th><AddMetricButton /></th>
+              <th>
+                <AddMetricButton props={userId}/>
+              </th>
             </tr>
             {Object.keys(dataByDate).map((currentDate, key) => (
               <tr>

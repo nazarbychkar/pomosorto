@@ -66,6 +66,32 @@ export async function insertUser(userId: number) {
   }
 }
 
+export async function insertUserMetric(
+  userId: number,
+  metricsName: string,
+  metricsType: string
+) {
+  try {
+    const collection = await connectMongo();
+
+    let typeValue: boolean | number;
+    if (metricsType == "Bool") typeValue = false;
+    else if (metricsType == "Number") typeValue = 0;
+    else throw Error("how? there is no such type");
+
+    const insertOneResult = await collection.updateOne(
+      { userId: userId },
+      { $set: { metricsName: typeValue } }
+    );
+
+    return insertOneResult;
+  } catch (e) {
+    throw Error("something is wrong with documnets, updation of documents.");
+  } finally {
+    await client.close();
+  }
+}
+
 export async function retrieveUserMetrics(userId: number) {
   try {
     const collection = await connectMongo();
