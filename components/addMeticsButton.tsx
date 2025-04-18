@@ -6,44 +6,55 @@ import { useEffect, useState } from "react";
 export default function AddMetricButton(props: any) {
   const [errorFlag, setErrorFlag] = useState(false);
   const [sendingFlag, setSendingFlag] = useState(false);
+  const [nameMetric, setNameMetric] = useState<string | null>(null);
+  const [typeMetric, setTypeMetric] = useState<string | null>(null);
+  const userId = props.userId;
+
+  if (!userId) {
+    throw Error("add metrics button: where is userId?");
+  }
+
+  // TODO: some error with hook/hooks
+  useEffect(() => {
+    async function sendMetricsData() {
+      // TODO: maybe i should't create new form data, i can use old one, just add userId
+      if (!(nameMetric && typeMetric)) {
+        return;
+      }
+
+      // const newFormData = new FormData();
+      // newFormData.set("userId", props.userId);
+      // newFormData.set("metricsName", nameMetric);
+      // newFormData.set("metricsType", typeMetric);
+      // console.log(newFormData);
+
+      const body = JSON.stringify({"userId":userId, "metricsName": nameMetric, "metricsType": typeMetric})
+      console.log(body)
+
+      const response = await fetch("http://localhost:3000/api/metric", {
+        method: "POST",
+        body: body
+      });
+
+      console.log("api metrics respons", response.status);
+    }
+
+    sendMetricsData();
+  }, [sendingFlag]);
 
   function addMetric(formData: FormData) {
     const metricsName = formData.get("metricsName");
     const metricsType = formData.get("metricsType");
-    // console.log(formData);
-    // console.log(metricsName, metricsType);
 
     if (!(metricsName && metricsType)) {
       setErrorFlag(true);
       return;
     }
 
-    const newFormData = new FormData();
-    newFormData.set("userId", props.userId);
-    newFormData.set("metricsName", metricsName);
-    newFormData.set("metricsType", metricsType);
+    setNameMetric(metricsName.toString());
+    setTypeMetric(metricsType.toString());
 
-    // TODO: some error with hook/hooks
-    useEffect(() => {
-      async function sendMetricsData() {
-        const response = await fetch("https://localhost:3000/api/metric", {
-          method: "POST",
-          body: newFormData,
-        });
-
-        console.log("api metrics respons", response.status);
-      }
-
-      sendMetricsData();
-    }, [sendingFlag]);
-
-    // insertUserMetric(
-    //   props.userId,
-    //   metricsName.toString(),
-    //   metricsType.toString()
-    // );
-
-    return;
+    setSendingFlag(!sendingFlag);
   }
 
   // TODO: add metric button -> dialog -> mongo -> retriev, okie?
@@ -87,7 +98,6 @@ export default function AddMetricButton(props: any) {
                 ) as HTMLDialogElement | null;
                 if (modal) modal.close();
                 if (errorFlag) setErrorFlag(false);
-                setSendingFlag(!sendingFlag);
               }}
             >
               close

@@ -1,22 +1,21 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { insertUserMetric } from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    const { userId, metricsName, metricsType } = req.body;
+export async function POST(req: Request) {
+  console.log(req.method);
+  const jsonBody = await req.json()
+  console.log("jsonBody", jsonBody)
 
-    if (!userId || !metricsName || !metricsType) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+  const { userId, metricsName, metricsType } = jsonBody;
 
-    try {
-      await insertUserMetric(userId, metricsName, metricsType);
-      return res.status(200).json({ message: "Metric added successfully" });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Failed to add metric" });
-    }
-  } else {
-    return res.status(405).json({ error: "Method not allowed" });
+  if (!userId || !metricsName || !metricsType) {
+    return new Response("Missing required fields", { status: 400 });
+  }
+
+  try {
+    await insertUserMetric(userId, metricsName, metricsType);
+    return new Response("Metric added successfully", { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response("Failed to add metric", { status: 500 });
   }
 }

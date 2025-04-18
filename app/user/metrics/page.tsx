@@ -5,6 +5,7 @@ import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
 
 // TODO: table should be in client component, cause it is interactive and constantly changing
+// TODO: fix tr, td, th keys, now it is a temporary solution
 export default async function Page() {
   const session = (await auth()) as SessionUserId;
   const userId = session.userId;
@@ -47,7 +48,7 @@ export default async function Page() {
       <div>
         <table>
           <tbody>
-            <tr>
+            <tr key={123123}>
               <th>Date</th>
               <th>FocusTime</th>
               {mongoData[0] &&
@@ -57,15 +58,15 @@ export default async function Page() {
                   </th>
                 ))}
               <th>
-                <AddMetricButton props={userId}/>
+                <AddMetricButton userId={userId}/>
               </th>
             </tr>
             {Object.keys(dataByDate).map((currentDate, key) => (
-              <tr>
+              <tr key={key}>
                 <td key={key} className="p-3">
                   {currentDate}
                 </td>
-                <td key={key} className="p-3">
+                <td key={100-key} className="p-3">
                   {dataByDate[currentDate].focusTime}
                 </td>
               </tr>

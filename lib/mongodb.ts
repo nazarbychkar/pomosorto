@@ -81,7 +81,7 @@ export async function insertUserMetric(
 
     const insertOneResult = await collection.updateOne(
       { userId: userId },
-      { $set: { metricsName: typeValue } }
+      { $set: { [metricsName]: typeValue } }
     );
 
     return insertOneResult;
