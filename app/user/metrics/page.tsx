@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import AddMetricButton from "@/components/addMeticsButton";
+import Table from "@/components/Table";
 import { retrieveUserMetrics } from "@/lib/mongodb";
 import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
@@ -30,50 +30,19 @@ export default async function Page() {
 
     if (!dataByDate[date]) {
       dataByDate[date] = { focusTime: 0 };
+      // TODO: add mongo metrics by date
+      // for (document of mongoData):
     }
 
     if (record.workRest) {
       dataByDate[date].focusTime += record.elapsedTime;
     }
   }
-  //
-
-  function addMetric() {}
-
-  function removeMetric() {}
 
   return (
     <main>
       <h1>Metrics</h1>
-      <div>
-        <table>
-          <tbody>
-            <tr key={123123}>
-              <th>Date</th>
-              <th>FocusTime</th>
-              {mongoData[0] &&
-                Object.keys(mongoData[0]).map((metricsKey, key) => (
-                  <th key={key} className="p-3">
-                    {metricsKey}
-                  </th>
-                ))}
-              <th>
-                <AddMetricButton userId={userId}/>
-              </th>
-            </tr>
-            {Object.keys(dataByDate).map((currentDate, key) => (
-              <tr key={key}>
-                <td key={key} className="p-3">
-                  {currentDate}
-                </td>
-                <td key={100-key} className="p-3">
-                  {dataByDate[currentDate].focusTime}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table userId={userId} mongoData={mongoData} dataByDate={dataByDate} />
     </main>
   );
 }

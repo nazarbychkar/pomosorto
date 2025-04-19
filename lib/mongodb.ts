@@ -79,9 +79,18 @@ export async function insertUserMetric(
     else if (metricsType == "Number") typeValue = 0;
     else throw Error("how? there is no such type");
 
+    const timestamp = new Date();
+    const date =
+      timestamp.getDate() +
+      "/" +
+      timestamp.getMonth() +
+      1 +
+      "/" +
+      timestamp.getFullYear();
+
     const insertOneResult = await collection.updateOne(
       { userId: userId },
-      { $set: { [metricsName]: typeValue } }
+      { $set: { [metricsName]: { [date]: typeValue } } }
     );
 
     return insertOneResult;
