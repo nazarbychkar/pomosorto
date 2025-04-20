@@ -21,7 +21,7 @@ export default function Table(props: any) {
           <tr key="chama">
             <th>Date</th>
             <th>FocusTime</th>
-            {mongoData[0] &&
+            {dataByDate[0] &&
               Object.keys(mongoData[0]).map((metricsKey, key) => (
                 <th key={key} className="p-3">
                   {metricsKey}

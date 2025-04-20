@@ -80,11 +80,11 @@ export async function insertUserMetric(
     else throw Error("how? there is no such type");
 
     const timestamp = new Date();
+    const monthHasASpecialTreatment = timestamp.getMonth() + 1;
     const date =
       timestamp.getDate() +
       "/" +
-      timestamp.getMonth() +
-      1 +
+      monthHasASpecialTreatment +
       "/" +
       timestamp.getFullYear();
 
@@ -112,3 +112,6 @@ export async function retrieveUserMetrics(userId: number) {
     await client.close();
   }
 }
+
+// TODO: synchronize all documents, say if '20/4/2025': { focusTime: 1, asd: 0 }
+// has "asd", then '9/4/2025': { focusTime: 6 } should also have "asd"
