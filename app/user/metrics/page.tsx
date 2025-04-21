@@ -3,10 +3,7 @@ import Table from "@/components/Table";
 import { retrieveUserMetrics } from "@/lib/mongodb";
 import { retrieveUserFocus } from "@/lib/postgresql";
 import { SessionUserId } from "@/lib/sessionInterface";
-import { isObject } from "util";
 
-// TODO: table should be in client component, cause it is interactive and constantly changing
-// TODO: fix tr, td, th keys, now it is a temporary solution
 export default async function Page() {
   const session = (await auth()) as SessionUserId;
   const userId = session.userId;
@@ -43,10 +40,12 @@ export default async function Page() {
     >) {
       if (mongoData[userKey].userId == userId) {
         for (const document of Object.keys(mongoData[userKey])) {
-          for (const dateMongo of Object.keys(mongoData[userKey][document])) {
-            if (dateMongo == date) {
+          for (const keyMongo of Object.keys(mongoData[userKey][document])) {
+            if (
+              document !== "_id" && document !== "userId"
+            ) {
               dataByDate[date][document] =
-                mongoData[userKey][document][dateMongo];
+                mongoData[userKey][document][keyMongo];
             }
           }
         }

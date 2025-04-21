@@ -45,9 +45,6 @@ export default function Timer() {
       const fetchedSession = await clientSessionFetch();
 
       setSession(fetchedSession as SessionUserId);
-
-      // TODO: remove this vulnerability later
-      // console.log("session", session);
     }
 
     fetchUser();

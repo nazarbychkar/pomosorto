@@ -105,7 +105,7 @@ export async function retrieveUserMetrics(userId: number) {
   try {
     const collection = await connectMongo();
 
-    const userData = await collection.find().toArray();
+    const userData = await collection.find({ userId: userId }).toArray();
 
     return userData;
   } finally {
@@ -115,3 +115,26 @@ export async function retrieveUserMetrics(userId: number) {
 
 // TODO: synchronize all documents, say if '20/4/2025': { focusTime: 1, asd: 0 }
 // has "asd", then '9/4/2025': { focusTime: 6 } should also have "asd"
+export async function synchronizeDocuments(userId: number) {
+  try {
+    const collection = await connectMongo();
+
+    const userData = await collection.find().toArray();
+
+    return userData;
+  } finally {
+    await client.close();
+  }
+}
+
+export async function findEveryone() {
+  try {
+    const collection = await connectMongo();
+
+    const userData = await collection.find().toArray();
+
+    return userData;
+  } finally {
+    await client.close();
+  }
+}

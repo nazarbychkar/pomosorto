@@ -1,9 +1,9 @@
 import { insertUserMetric } from "@/lib/mongodb";
 
 export async function POST(req: Request) {
-  console.log(req.method);
+  // console.log(req.method);
   const jsonBody = await req.json()
-  console.log("jsonBody", jsonBody)
+  // console.log("jsonBody", jsonBody)
 
   const { userId, metricsName, metricsType } = jsonBody;
 

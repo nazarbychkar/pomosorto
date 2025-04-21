@@ -14,22 +14,14 @@ export default function AddMetricButton(props: any) {
     throw Error("add metrics button: where is userId?");
   }
 
-  // TODO: some error with hook/hooks
   useEffect(() => {
     async function sendMetricsData() {
-      // TODO: maybe i should't create new form data, i can use old one, just add userId
       if (!(nameMetric && typeMetric)) {
         return;
       }
 
-      // const newFormData = new FormData();
-      // newFormData.set("userId", props.userId);
-      // newFormData.set("metricsName", nameMetric);
-      // newFormData.set("metricsType", typeMetric);
-      // console.log(newFormData);
-
       const body = JSON.stringify({"userId":userId, "metricsName": nameMetric, "metricsType": typeMetric})
-      console.log(body)
+      // console.log(body)
 
       const response = await fetch("http://localhost:3000/api/metric", {
         method: "POST",
@@ -57,7 +49,6 @@ export default function AddMetricButton(props: any) {
     setSendingFlag(!sendingFlag);
   }
 
-  // TODO: add metric button -> dialog -> mongo -> retriev, okie?
   return (
     <div>
       <button

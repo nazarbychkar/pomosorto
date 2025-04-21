@@ -15,7 +15,7 @@ export default async function Page() {
 
   const user = session.user;
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <main>
