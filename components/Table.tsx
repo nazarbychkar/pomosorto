@@ -6,7 +6,7 @@ import AddMetricButton from "@/components/AddMeticButton";
 
 export default function Table(props: any) {
   const userId = props.userId;
-  const dataByDate = props.dataByDate;
+  const dataByDate: Record<string, Record<string, any>> = props.dataByDate;
 
   const [editingRow, setEditingRow] = useState<string | null>(null);
   const [editedData, setEditedDate] = useState<Record<string, any>>({});
@@ -14,23 +14,19 @@ export default function Table(props: any) {
   // TODO: create this button, maybe separatly
   function removeMetric() {}
 
-  console.log("dataByDate", dataByDate)
-
-
+  console.log("dataByDate", dataByDate);
+  // TODO: remake .entries loops into .values
   return (
     <div>
       <table>
         <thead>
           <tr key="chama">
             <th>Date</th>
-            <th>FocusTime</th>
-            {/* TODO: headings */}
+            {/* <th>FocusTime</th> */}
             {dataByDate &&
-              Object.keys(dataByDate[Object.keys(dataByDate)[0]]).map((metricsKey, key) => (
-                <th key={key} className="p-3">
-                  {metricsKey}
-                </th>
-              ))}
+              Object.entries(dataByDate[Object.keys(dataByDate)[0]]).map(
+                (key, value) => <th className="p-3">{key[0]}</th>
+              )}
             <th>
               <AddMetricButton userId={userId} />
             </th>
@@ -45,9 +41,11 @@ export default function Table(props: any) {
                 <td key={key} className="p-3">
                   {currentDate}
                 </td>
-                <td key={100 - key} className="p-3">
-                  {dataByDate[currentDate].focusTime}
-                </td>
+                {Object.entries(dataByDate[currentDate]).map((value, key) => (
+                  <td key={key} className="text-center">
+                    {String(value[1])}
+                  </td>
+                ))}
               </tr>
             );
           })}
