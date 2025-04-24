@@ -23,12 +23,12 @@ export default function AddMetricButton(props: any) {
       const body = JSON.stringify({"userId":userId, "metricsName": nameMetric, "metricsType": typeMetric})
       // console.log(body)
 
-      const response = await fetch("http://localhost:3000/api/metric", {
+      const response = await fetch("http://localhost:3000/api/add-metric", {
         method: "POST",
         body: body
       });
 
-      console.log("api metrics respons", response.status);
+      console.log("api metrics add respons", response.status);
     }
 
     sendMetricsData();

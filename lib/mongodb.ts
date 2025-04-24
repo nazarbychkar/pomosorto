@@ -112,6 +112,29 @@ export async function retrieveUserMetrics(userId: number) {
     await client.close();
   }
 }
+// TODO: why it updates all the dates?
+export async function updateUserMetrics(
+  userId: number,
+  date: string,
+  data: any
+) {
+  try {
+    const collection = await connectMongo();
+// TODO: fix error MongoPoolClosedError: Attempted to check out a connection from closed connection pool]
+// i think it is something to do with this loop,
+// check internet
+    for (const [key, value] of Object.entries(data)) {
+      await collection.updateOne(
+        { userId: userId },
+        { $set: { [`${key}.${date}`]: value } }
+      );
+    }
+
+    // return userData;
+  } finally {
+    await client.close();
+  }
+}
 
 // TODO: synchronize all documents, say if '20/4/2025': { focusTime: 1, asd: 0 }
 // has "asd", then '9/4/2025': { focusTime: 6 } should also have "asd"
