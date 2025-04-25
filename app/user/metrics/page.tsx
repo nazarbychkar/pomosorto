@@ -13,6 +13,7 @@ export default async function Page() {
 
   interface DataByDate {
     focusTime: number;
+    [key: string]: number | boolean | string; // Allow dynamic keys with number values
   }
 
   // data aggregation
@@ -33,24 +34,17 @@ export default async function Page() {
     if (record.workRest) {
       dataByDate[date].focusTime += record.elapsedTime;
     }
-
+    // TODO: fix this
     // TODO: this is monstrosity, rework this
-    for (const userKey of Object.keys(mongoData) as Array<
-      keyof typeof mongoData
-    >) {
-      if (mongoData[userKey].userId == userId) {
-        for (const document of Object.keys(mongoData[userKey])) {
-          for (const keyMongo of Object.keys(mongoData[userKey][document])) {
-            if (
-              document !== "_id" && document !== "userId"
-            ) {
-              dataByDate[date][document] =
-                mongoData[userKey][document][keyMongo];
-            }
-          }
+    for (const [docKey, docValue] of Object.entries(mongoData)) {
+      for (const [dateKey, dateValue] of Object.entries(docValue)) {
+        if (docKey !== "_id" && docKey !== "userId" && dateKey == date) {
+          console.log(date, docKey, dateValue);
+          dataByDate[date][docKey] = dateValue;
         }
       }
     }
+    // console.log(dataByDate);
   }
   return (
     <main>

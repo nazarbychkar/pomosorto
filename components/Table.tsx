@@ -17,6 +17,7 @@ export default function Table(props: any) {
   useEffect(() => {
     async function sendData() {
       if (editingRow) {
+        console.log("editingRow", editingRow);
         const body = JSON.stringify({
           userId: userId,
           date: editingRow,
@@ -33,6 +34,8 @@ export default function Table(props: any) {
 
         console.log("api metrics update respons", response.status);
         // await updateUserMetrics(userId, editingRow, editedData)
+        setEditingRow(null);
+        setEditedData({});
       } else {
         console.log(
           "table error: editingRow is missing, how? must be start up useEffect"
@@ -40,7 +43,7 @@ export default function Table(props: any) {
       }
     }
     sendData();
-  });
+  }, [sendDataFlag]);
 
   // TODO: create this button, maybe separatly, maybe on the profile page
   function removeMetric() {}
@@ -50,14 +53,13 @@ export default function Table(props: any) {
   }
 
   function handleEdit(date: string) {
+    console.log("date", date);
     setEditingRow(date);
     setEditedData({ ...dataByDate[date] });
   }
 
   function handleSave() {
     setSendDataFlage(!sendDataFlag);
-    setEditingRow(null);
-    setEditedData({});
   }
 
   function handleCancel() {
