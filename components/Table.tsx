@@ -17,7 +17,7 @@ export default function Table(props: any) {
   useEffect(() => {
     async function sendData() {
       if (editingRow) {
-        console.log("editingRow", editingRow);
+        // console.log("editingRow", editingRow);
         const body = JSON.stringify({
           userId: userId,
           date: editingRow,
@@ -53,7 +53,7 @@ export default function Table(props: any) {
   }
 
   function handleEdit(date: string) {
-    console.log("date", date);
+    // console.log("date", date);
     setEditingRow(date);
     setEditedData({ ...dataByDate[date] });
   }

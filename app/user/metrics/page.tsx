@@ -34,18 +34,24 @@ export default async function Page() {
     if (record.workRest) {
       dataByDate[date].focusTime += record.elapsedTime;
     }
-    // TODO: fix this
     // TODO: this is monstrosity, rework this
-    for (const [docKey, docValue] of Object.entries(mongoData)) {
+    for (const [docKey, docValue] of Object.entries(mongoData[0])) {
       for (const [dateKey, dateValue] of Object.entries(docValue)) {
-        if (docKey !== "_id" && docKey !== "userId" && dateKey == date) {
-          console.log(date, docKey, dateValue);
+        if (
+          docKey !== "_id" &&
+          docKey !== "userId" &&
+          dateKey == date &&
+          (typeof dateValue === "string" ||
+            typeof dateValue === "number" ||
+            typeof dateValue === "boolean")
+        ) {
           dataByDate[date][docKey] = dateValue;
         }
       }
     }
-    // console.log(dataByDate);
   }
+  console.log(dataByDate);
+
   return (
     <main>
       <h1>Metrics</h1>

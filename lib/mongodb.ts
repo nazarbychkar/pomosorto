@@ -124,14 +124,14 @@ export async function updateUserMetrics(
 // i think it is something to do with this loop,
 // check internet
     for (const [key, value] of Object.entries(data)) {
-      console.log("mongoUpdate", key, value, date)
+      // console.log("mongoUpdate", key, value, date)
       await collection.updateOne(
         { userId: userId },
         { $set: { [`${key}.${[date]}`]: value } }
       );
     }
     const userData = await collection.find({ userId: userId }).toArray();
-    console.log(userData)
+    // console.log(userData)
 
     // return userData;
   } finally {
