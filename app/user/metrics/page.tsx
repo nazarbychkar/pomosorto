@@ -8,24 +8,43 @@ export default async function Page() {
   const session = (await auth()) as SessionUserId;
   const userId = session.userId;
 
-  const mongoData = await retrieveUserMetrics(userId);
-  const postgreData = await retrieveUserFocus(userId);
+  const [mongoData, postgreData] = await Promise.all([
+    retrieveUserMetrics(userId),
+    retrieveUserFocus(userId),
+  ]);
 
   interface DataByDate {
     focusTime: number;
-    [key: string]: number | boolean | string; // Allow dynamic keys with number values
+    [key: string]: any;
+  }
+// TODO: somewhere there is a problem with dates.
+  const formatDate = (date: Date): string => {
+    const pad = (num: number) => num.toString().padStart(2, '0');
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+  };
+  
+
+  const dataByDate: Record<string, DataByDate> = {};
+  const keySet = new Set<string>();
+
+  // Preprocess Mongo data once
+  const mongoEntry = mongoData[0] ?? {};
+  for (const [key, value] of Object.entries(mongoEntry)) {
+    if (key === "_id" || key === "userId") continue;
+    keySet.add(key);
+
+    for (const [dateStr, val] of Object.entries(value)) {
+      const normalizedDate = formatDate(new Date(dateStr)); // ensure consistent format
+      if (!dataByDate[normalizedDate]) {
+        dataByDate[normalizedDate] = { focusTime: 0 };
+      }
+      dataByDate[normalizedDate][key] = val;
+    }
   }
 
-  // data aggregation
-  const dataByDate: Record<string, DataByDate> = {};
-  for (let record of postgreData) {
-    const monthHasASpecialTreatment = record.sessionTimestamp.getMonth() + 1;
-    const date =
-      record.sessionTimestamp.getDate() +
-      "/" +
-      monthHasASpecialTreatment +
-      "/" +
-      record.sessionTimestamp.getFullYear();
+  // Process PostgreSQL data
+  for (const record of postgreData) {
+    const date = formatDate(record.sessionTimestamp);
 
     if (!dataByDate[date]) {
       dataByDate[date] = { focusTime: 0 };
@@ -34,28 +53,31 @@ export default async function Page() {
     if (record.workRest) {
       dataByDate[date].focusTime += record.elapsedTime;
     }
-    // TODO: this is monstrosity, rework this
-    for (const [docKey, docValue] of Object.entries(mongoData[0])) {
-      for (const [dateKey, dateValue] of Object.entries(docValue)) {
-        if (
-          docKey !== "_id" &&
-          docKey !== "userId" &&
-          dateKey == date &&
-          (typeof dateValue === "string" ||
-            typeof dateValue === "number" ||
-            typeof dateValue === "boolean")
-        ) {
-          dataByDate[date][docKey] = dateValue;
-        }
+  }
+
+  // Fill in missing keys
+  for (const entry of Object.values(dataByDate)) {
+    for (const key of keySet) {
+      if (!(key in entry)) {
+        entry[key] = " ";
       }
     }
   }
-  console.log(dataByDate);
+
+  // Optional: sort data by date (dd/mm/yyyy)
+  const sortedDataByDate = Object.fromEntries(
+    Object.entries(dataByDate).sort(([a], [b]) => {
+      const [da, ma, ya] = a.split("/").map(Number);
+      const [db, mb, yb] = b.split("/").map(Number);
+      return new Date(ya, ma - 1, da).getTime() - new Date(yb, mb - 1, db).getTime();
+    })
+  );
+
 
   return (
     <main>
       <h1>Metrics</h1>
-      <Table userId={userId} dataByDate={dataByDate} />
+      <Table userId={userId} dataByDate={sortedDataByDate} />
     </main>
   );
 }
