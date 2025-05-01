@@ -78,7 +78,7 @@ export default function Table(props: any) {
             <th>Date</th>
             {/* <th>FocusTime</th> */}
             {headers &&
-              headers.map((key, value) => <th className="p-3">{key[0]}</th>)}
+              headers.map((key, value) => <th key={key[0]} className="p-3">{key[0]}</th>)}
             <th>Actions</th>
           </tr>
         </thead>
@@ -87,12 +87,12 @@ export default function Table(props: any) {
           {Object.keys(dataByDate).map((currentDate, key) => {
             const isEditing = editingRow === currentDate;
             return (
-              <tr key={key}>
+              <tr key={currentDate}>
                 <td key={currentDate} className="p-3">
                   {currentDate}
                 </td>
-                {Object.entries(dataByDate[currentDate]).map((value, key) => (
-                  <td key={key} className="text-center">
+                {Object.entries(dataByDate[currentDate]).map((value, key0) => (
+                  <td key={value[0]} className="text-center">
                     {isEditing ? (
                       <input
                         type="text"
@@ -106,7 +106,6 @@ export default function Table(props: any) {
                     )}
                   </td>
                 ))}
-                {/* edit button right here */}
                 <td>
                   {isEditing ? (
                     <>
